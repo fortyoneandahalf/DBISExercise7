@@ -14,6 +14,7 @@ import com.dbExercise7.util.DB2ConnectionManager;
 
 public class CreateTables {
 	public static void main(String[] args) {
+		dropTables();
 		createTables();
 		//OTHERS MIGHT BE USEFUL LATER - So they are still somewhere in this file.
 		//createInitialObjects();
@@ -37,6 +38,69 @@ public class CreateTables {
 		      //URL url = ClassLoader.getSystemResource("createObjects.sql");
 		      URL url = ClassLoader.getSystemResource("createTablesSimple.sql");
 		      //URL url = ClassLoader.getSystemResource("DropAllTables.sql");
+		      
+		      String sql= "";
+		      Scanner scanIn = null;
+		      try {
+		    	  scanIn = new Scanner(new File(url.toURI()));
+		    	  while(scanIn.hasNext()){
+		    		  sql = scanIn.nextLine();
+		    		  sql = sql.replace(";", "");
+		    		  if(sql.length()>5){
+		    			  System.out.println(sql);
+		    			  stmt.executeUpdate(sql);
+		    			  //con.commit();
+		    		  }
+		    	  }
+		    	  System.out.println(sql);
+		      } catch (FileNotFoundException e) {
+		    	  e.printStackTrace();
+		      } catch (URISyntaxException e) {
+		    	  e.printStackTrace();
+		      }
+		      
+		      // Execute a query and generate a ResultSet instance
+		      ResultSet rs = stmt.executeQuery("select TABNAME from syscat.tables where tabschema = 'VSISP51'");                    
+		      System.out.println("**** Created JDBC ResultSet object");
+
+		      // Print all of the employee numbers to standard output device
+		      while (rs.next()) {
+		        String col1 = rs.getString(1);
+		        System.out.println("Table name = " + col1);
+		      }
+		      System.out.println("**** Fetched all rows from JDBC ResultSet");
+		      // Close the ResultSet
+		      rs.close();
+		      System.out.println("**** Closed JDBC ResultSet");
+		      
+		      // Close the Statement
+		      stmt.close();
+		      System.out.println("**** Closed JDBC Statement");
+
+		      // Connection must be on a unit-of-work boundary to allow close
+		      con.commit();
+		      System.out.println ( "**** Transaction committed" );
+		    
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void dropTables(){
+		System.out.println("Hello");
+		try {
+			// Get connection
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+			con.setAutoCommit(false);
+		      System.out.println("**** Created a JDBC connection to the data source");
+
+		      // Create the Statement
+		      Statement stmt = con.createStatement();                                            
+		      System.out.println("**** Created JDBC Statement object");
+
+		      //URL url = ClassLoader.getSystemResource("createObjects.sql");
+		      //URL url = ClassLoader.getSystemResource("createTablesSimple.sql");
+		      URL url = ClassLoader.getSystemResource("DropAllTables.sql");
 		      
 		      String sql= "";
 		      Scanner scanIn = null;
