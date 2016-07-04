@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 
 public class SalesDataExtraction {
 	
-	public static List<InputSales> readFromFile(String pathname)
+	public static void readFromFile(String pathname)
 	{
 		InputSales sales;
 		List<InputSales> totalSale = new ArrayList<InputSales>();
@@ -38,12 +38,15 @@ public class SalesDataExtraction {
 								continue;
 							}
 							
-							DateFormat df = new SimpleDateFormat("mm.dd.yyyy");
+							DateFormat df = new SimpleDateFormat("dd.mm.yyyy");
 							Date salesDate = df.parse(strArr[0]);
+							//SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+							//String format = formatter.format(date);
 							int units = Integer.parseInt(strArr[3]);
 							double unitSales = Double.parseDouble(strArr[4].replace(",", "."));
 							sales = new InputSales(salesDate, strArr[1], strArr[2], units, unitSales);
-							totalSale.add(sales);
+							sales.save();
+							//totalSale.add(sales);
 						}
 						else{
 							System.out.println("Incorrect data format:" + currentLine);
@@ -66,7 +69,7 @@ public class SalesDataExtraction {
 			e.printStackTrace();
 		}
 		
-		return totalSale;
+		//return totalSale;
 	}
 
 }
