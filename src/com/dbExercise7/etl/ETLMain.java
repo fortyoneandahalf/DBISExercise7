@@ -1,5 +1,6 @@
 package com.dbExercise7.etl;
 
+import com.dbExercise7.createTables.CreateTables;
 import com.dbExercise7.data.InputSales;
 import com.dbExercise7.etl.SalesDataExtraction;
 import com.dbExercise7.extractDB2.ExtractDB2;
@@ -12,6 +13,8 @@ public class ETLMain
 
 	public static void main(String[] args)
 	{
+		CreateTables.dropTables();
+		CreateTables.createTables();
 		// TODO Extract dimensions from DB2 and just load them directly!
 		ExtractDB2.extractFromDB();
 		
