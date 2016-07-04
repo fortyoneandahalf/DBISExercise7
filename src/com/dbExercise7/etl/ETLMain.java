@@ -14,10 +14,9 @@ public class ETLMain
 	{
 		// TODO Extract dimensions from DB2 and just load them directly!
 		ExtractDB2.extractFromDB();
+		
 		// TODO Extract sales data from sales.csv
-		List<InputSales> totalSales = new ArrayList<InputSales>();
-		totalSales = SalesDataExtraction.readFromFile("sales.csv");
-		System.out.println(totalSales);
+		SalesDataExtraction.readFromFile("sales.csv");
 		
 		// TODO Load extracted data into data warehouse
 	}
