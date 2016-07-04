@@ -1,0 +1,9 @@
+drop table SALES;
+drop table SHOPID;
+drop table STADTID;
+drop table REGIONID;
+drop table LANDID;
+drop table ARTICLEID;
+drop table PRODUCTGROUPID;
+drop table PRODUCTFAMILYID;
+drop table PRODUCTCATEGORYID;
