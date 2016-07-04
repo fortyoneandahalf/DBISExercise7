@@ -12,7 +12,6 @@ import com.dbExercise7.data.InputSales;
 
 import java.util.ArrayList;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class SalesDataExtraction {
@@ -31,14 +30,28 @@ public class SalesDataExtraction {
 			while((currentLine = br.readLine()) != null){
 				if(!isFirstLine)
 				{
-					String[] strArr = currentLine.split(",");
-					
-					DateFormat df = new SimpleDateFormat("mm/dd/yyyy");
-					Date salesDate = df.parse(strArr[0]);
-					int units = Integer.parseInt(strArr[3]);
-					double unitSales = Double.parseDouble(strArr[4]);
-					sales = new InputSales(salesDate, strArr[1], strArr[2], units, unitSales);
-					totalSale.add(sales);
+					String[] strArr = currentLine.split(";");
+					try {
+						if(strArr.length == 5){
+							if(strArr[0].trim().equals("") || strArr[1].trim().equals("") || strArr[2].trim().equals("") || strArr[3].trim().equals("") || strArr[4].trim().equals("")){
+								System.out.println("Incorrect data format:" + currentLine);
+								continue;
+							}
+							
+							DateFormat df = new SimpleDateFormat("mm.dd.yyyy");
+							Date salesDate = df.parse(strArr[0]);
+							int units = Integer.parseInt(strArr[3]);
+							double unitSales = Double.parseDouble(strArr[4].replace(",", "."));
+							sales = new InputSales(salesDate, strArr[1], strArr[2], units, unitSales);
+							totalSale.add(sales);
+						}
+						else{
+							System.out.println("Incorrect data format:" + currentLine);
+						}
+					} catch (Exception e) {
+						System.out.println("Incorrect data format:" + currentLine);
+						e.printStackTrace();
+					}
 				}
 				else
 				{
@@ -50,8 +63,6 @@ public class SalesDataExtraction {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		
