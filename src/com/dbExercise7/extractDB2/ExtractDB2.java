@@ -4,9 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
-import com.dbExercise7.data.ProductCategoryId;
+import com.dbExercise7.data.*;
 import com.dbExercise7.util.DB2ConnectionManager;
 
 
@@ -18,11 +17,18 @@ public class ExtractDB2 {
 	}
 	
 	public static void extractFromDB(){
-		getTableProductCategoryId();
+		//Just copying from here.. nothing to see!
+		ExtractDB2.getTableProductCategoryId();
+		ExtractDB2.getTableProductFamilyId();
+		ExtractDB2.getTableProductGroupId();
+		ExtractDB2.getTableArticleId();
+		ExtractDB2.getTableLandId();
+		ExtractDB2.getTableRegionId();
+		ExtractDB2.getTableStadtId();
+		ExtractDB2.getTableShopId();
 	}
 	
-	public static ArrayList<ProductCategoryId> getTableProductCategoryId(){
-		ArrayList<ProductCategoryId> objects = new ArrayList<>();
+	public static boolean getTableProductCategoryId(){
 		try {
 			// Get connection
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
@@ -34,20 +40,20 @@ public class ExtractDB2 {
 			// Processing result
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				objects.add(new ProductCategoryId(rs.getInt("PRODUCTCATEGORYID"), rs.getString("NAME")));
+				ProductCategoryId object = new ProductCategoryId(rs.getInt("PRODUCTCATEGORYID"), rs.getString("NAME"));
+				object.save();
 			}
 			rs.close();
 			pstmt.close();
 			DB2ConnectionManager.getInstance().closeConnection();
-			
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return objects;
+		return false;
 	}
 	
-	public static ArrayList<ProductFamilyId> getTableProductFamilyId(){
-		ArrayList<ProductFamilyId> objects = new ArrayList<>();
+	public static boolean getTableProductFamilyId(){
 		try {
 			// Get connection
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
@@ -59,20 +65,20 @@ public class ExtractDB2 {
 			// Processing result
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				objects.add(new ProductFamilyId(rs.getInt("PRODUCTFAMILYID"), rs.getInt("PRODUCTCATEGORYID"), rs.getString("NAME")));
+				ProductFamilyId object = new ProductFamilyId(rs.getInt("PRODUCTFAMILYID"), rs.getInt("PRODUCTCATEGORYID"), rs.getString("NAME"));
+				object.save();
 			}
 			rs.close();
 			pstmt.close();
 			DB2ConnectionManager.getInstance().closeConnection();
-			
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return objects;
+		return false;
 	}
 	
-	public static ArrayList<ProductGroupId> getTableProductGroupId(){
-		ArrayList<ProductGroupId> objects = new ArrayList<>();
+	public static boolean getTableProductGroupId(){
 		try {
 			// Get connection
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
@@ -84,20 +90,20 @@ public class ExtractDB2 {
 			// Processing result
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				objects.add(new ProductGroupId(rs.getInt("PRODUCTGROUPID"), rs.getInt("PRODUCTFAMILYID"), rs.getString("NAME")));
+				ProductGroupId object = new ProductGroupId(rs.getInt("PRODUCTGROUPID"), rs.getInt("PRODUCTFAMILYID"), rs.getString("NAME"));
+				object.save();
 			}
 			rs.close();
 			pstmt.close();
 			DB2ConnectionManager.getInstance().closeConnection();
-			
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return objects;
+		return false;
 	}
 	
-	public static ArrayList<ArticleId> getTableArticleId(){
-		ArrayList<ArticleId> objects = new ArrayList<>();
+	public static boolean getTableArticleId(){
 		try {
 			// Get connection
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
@@ -109,46 +115,117 @@ public class ExtractDB2 {
 			// Processing result
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				objects.add(new ArticleId(rs.getInt("ARTICLEID"), rs.getInt("PRODUCTGROUPID"), rs.getString("NAME"), rs.getDouble("PREIS")));
+				ArticleId object = new ArticleId(rs.getInt("ARTICLEID"), rs.getInt("PRODUCTGROUPID"), rs.getString("NAME"), rs.getDouble("PREIS"));
+				object.save();
 			}
 			rs.close();
 			pstmt.close();
 			DB2ConnectionManager.getInstance().closeConnection();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return objects;
-	}
-	
-	public boolean save() {
-		
-		try {
-			// Get connection
-			Connection con = DB2ConnectionManager.getInstance().getConnection();
-						
-			String insertSQL = "INSERT INTO apartment(id, floor, rent, rooms, balcony, builtinkitchen) VALUES (?, ?, ?, ?, ?, ?)";
-
-			PreparedStatement pstmt = con.prepareStatement(insertSQL);
-
-			// Set parameters of the prepared statements.
-			//pstmt.setInt(1, getId());
-			//pstmt.setInt(2, getFloor());
-			//pstmt.setFloat(3, getRent());
-			//pstmt.setInt(4, getRooms());
-			//pstmt.setInt(5, isBalcony()? 1 : 0);
-			//pstmt.setInt(6, isBuiltInKitchen()? 1 : 0);
-			pstmt.executeUpdate();
-			pstmt.close();
-			
-			con.commit();
-			DB2ConnectionManager.getInstance().closeConnection();;
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
 		}
+		return false;
 	}
 	
+	public static boolean getTableLandId(){
+		try {
+			// Get connection
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+			
+			// Prepare Statement
+			String selectSQL = "SELECT * FROM DB2INST1.LANDID";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+
+			// Processing result
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				LandId object = new LandId(rs.getInt("LANDID"), rs.getString("NAME"));
+				object.save();
+			}
+			rs.close();
+			pstmt.close();
+			DB2ConnectionManager.getInstance().closeConnection();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean getTableRegionId(){
+		try {
+			// Get connection
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+			
+			// Prepare Statement
+			String selectSQL = "SELECT * FROM DB2INST1.REGIONID";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+
+			// Processing result
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				RegionId object = new RegionId(rs.getInt("REGIONID"), rs.getInt("LANDID"), rs.getString("NAME"));
+				object.save();
+			}
+			rs.close();
+			pstmt.close();
+			DB2ConnectionManager.getInstance().closeConnection();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean getTableStadtId(){
+		try {
+			// Get connection
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+			
+			// Prepare Statement
+			String selectSQL = "SELECT * FROM DB2INST1.STADTID";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+
+			// Processing result
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				StadtId object = new StadtId(rs.getInt("STADTID"), rs.getInt("REGIONID"), rs.getString("NAME"));
+				object.save();
+			}
+			rs.close();
+			pstmt.close();
+			DB2ConnectionManager.getInstance().closeConnection();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean getTableShopId(){
+		try {
+			// Get connection
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+			
+			// Prepare Statement
+			String selectSQL = "SELECT * FROM DB2INST1.SHOPID";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+
+			// Processing result
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ShopId object = new ShopId(rs.getInt("SHOPID"), rs.getInt("STADTID"), rs.getString("NAME"));
+				object.save();
+			}
+			rs.close();
+			pstmt.close();
+			DB2ConnectionManager.getInstance().closeConnection();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 	
 }
