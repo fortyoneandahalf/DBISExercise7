@@ -15,6 +15,7 @@ public class ETLMain
 		// TODO Extract sales data from sales.csv
 		List<InputSales> totalSales = new ArrayList<InputSales>();
 		totalSales = SalesDataExtraction.readFromFile("sales.csv");
+		System.out.println(totalSales);
 		
 		// TODO Load extracted data into data warehouse
 	}
