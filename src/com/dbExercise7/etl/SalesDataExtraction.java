@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.dbExercise7.data.InputSales;
+import com.dbExercise7.data.IntStringPair;
 import com.dbExercise7.util.DB2ConnectionManager;
 
 import java.util.ArrayList;
@@ -27,8 +28,8 @@ public class SalesDataExtraction {
 	public static void readFromFile(String pathname)
 	{
 		ArrayList<InputSales> inputSalesData = new ArrayList<InputSales>();
-		ArrayList<Object[]> inputSalesShop = new ArrayList<Object[]>();
-		ArrayList<Object[]> inputSalesProduct = new ArrayList<Object[]>();
+		ArrayList<IntStringPair> inputSalesShop = new ArrayList<IntStringPair>();
+		ArrayList<IntStringPair> inputSalesProduct = new ArrayList<IntStringPair>();
 		
 		int i = 0;
 		String currentLine = "";
@@ -50,8 +51,8 @@ public class SalesDataExtraction {
 					int units = Integer.parseInt(strArr[3]);
 					double unitSales = Double.parseDouble(strArr[4].replace(",", "."));
 					inputSalesData.add(new InputSales(newDate, strArr[1], strArr[2], units, unitSales));
-					inputSalesShop.add(new Object[]{i, strArr[1]});
-					inputSalesProduct.add(new Object[]{i, strArr[2]});
+					inputSalesShop.add(new IntStringPair(i, strArr[1]));
+					inputSalesProduct.add(new IntStringPair(i, strArr[2]));
 					i++;
 				} catch (Exception e) {
 					System.out.println("Incorrect data format:" + currentLine);
@@ -69,24 +70,24 @@ public class SalesDataExtraction {
 		//process the data here
 		//CONVERT ALL SHOPNAME TO ID
 		while(inputSalesShop.size()>0){
-			Object[] initiator = inputSalesShop.get(0);
-			String initShopName = (String) initiator[1];
+			IntStringPair initiator = inputSalesShop.get(0);
+			String initShopName = initiator.getTheString();
 			int initId = getShopIdFromName(initShopName);
 			if(initId == -1){
 				//Shop doesn't exist
-				InputSales initSalesObj = inputSalesData.get((int)initiator[0]);
+				InputSales initSalesObj = inputSalesData.get(initiator.getTheInt());
 				System.out.println("Shop not exist."+initSalesObj.getShop()+":"+initSalesObj.getDate()+":"+initSalesObj.getProduct()+":"+initSalesObj.getUnits());
 				//Now remove all instances of inexistent shop! - The whole Fking records!
-				for (Object[] aSalesShop : inputSalesShop) {
-					if(((String) aSalesShop[1]).equals(initShopName)){
-						int idOfThatRecord = (int) aSalesShop[0];
+				for (IntStringPair aSalesShop : inputSalesShop) {
+					if(aSalesShop.getTheString().equals(initShopName)){
+						int idOfThatRecord = aSalesShop.getTheInt();
 						inputSalesData.get(idOfThatRecord).setIgnore(true);
 						
 						//SMART LOOP
 						int productStartIndex = inputSalesShop.indexOf(aSalesShop);
 						for (int j = productStartIndex; j < inputSalesProduct.size(); j++) {
-							Object[] aSalesProduct = inputSalesProduct.get(j);
-							if(((int)aSalesProduct[0]) == idOfThatRecord){
+							IntStringPair aSalesProduct = inputSalesProduct.get(j);
+							if(aSalesProduct.getTheInt() == idOfThatRecord){
 								inputSalesProduct.remove(aSalesProduct);
 								break;
 							}
@@ -102,9 +103,9 @@ public class SalesDataExtraction {
 			}
 			//else initId must be at least 0;
 			for (int j = 0; j < inputSalesShop.size(); j++) {
-				Object[] aSalesShop = inputSalesShop.get(j);
-				if(((String) aSalesShop[1]).equals(initShopName)){
-					int idOfThatRecord = (int) aSalesShop[0];
+				IntStringPair aSalesShop = inputSalesShop.get(j);
+				if(aSalesShop.getTheString().equals(initShopName)){
+					int idOfThatRecord = aSalesShop.getTheInt();
 					inputSalesData.get(idOfThatRecord).setShopId(initId);
 					inputSalesShop.remove(aSalesShop);
 					j--;
@@ -113,18 +114,18 @@ public class SalesDataExtraction {
 		}
 		System.out.println("CONVERTED ALL SHOP NAME TO ID");
 		while(inputSalesProduct.size()>0){
-			Object[] initiator = inputSalesProduct.get(0);
-			String initProductName = (String) initiator[1];
+			IntStringPair initiator = inputSalesProduct.get(0);
+			String initProductName = initiator.getTheString();
 			int initId = getProductIdFromName(initProductName);
 			if(initId == -1){
 				//Product doesn't exist
-				InputSales initSalesObj = inputSalesData.get((int)initiator[0]);
+				InputSales initSalesObj = inputSalesData.get(initiator.getTheInt());
 				System.out.println("Product not exist."+initSalesObj.getShop()+":"+initSalesObj.getDate()+":"+initSalesObj.getProduct()+":"+initSalesObj.getUnits());
 				//Now remove all instances of inexistent Product! - The whole Fking records!
 				for (int j = 0; j < inputSalesProduct.size(); j++) {
-					Object[] aSalesProduct = inputSalesProduct.get(j);
-					if(((String)aSalesProduct[1]).equals(initProductName)){
-						int idOfThatRecord = (int) aSalesProduct[0];
+					IntStringPair aSalesProduct = inputSalesProduct.get(j);
+					if(aSalesProduct.getTheString().equals(initProductName)){
+						int idOfThatRecord = aSalesProduct.getTheInt();
 						inputSalesData.get(idOfThatRecord).setIgnore(true);
 						inputSalesProduct.remove(aSalesProduct);
 						j--;
@@ -138,9 +139,9 @@ public class SalesDataExtraction {
 			}
 			//else initId must be at least 0;
 			for (int j = 0; j < inputSalesProduct.size(); j++) {
-				Object[] aSalesProduct = inputSalesProduct.get(j);
-				if(((String) aSalesProduct[1]).equals(initProductName)){
-					int idOfThatRecord = (int) aSalesProduct[0];
+				IntStringPair aSalesProduct = inputSalesProduct.get(j);
+				if(aSalesProduct.getTheString().equals(initProductName)){
+					int idOfThatRecord = aSalesProduct.getTheInt();
 					inputSalesData.get(idOfThatRecord).setArticleId(initId);
 					inputSalesProduct.remove(aSalesProduct);
 					j--;
@@ -232,4 +233,6 @@ public class SalesDataExtraction {
 		}
 		
 	}
+	
+	
 }
