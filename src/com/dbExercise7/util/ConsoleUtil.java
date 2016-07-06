@@ -39,7 +39,6 @@ public class ConsoleUtil
 		{
 			for(String s : columnDetails.keySet())
 			{
-				int temp = columnDetails.get(s);
 				
 				switch(columnDetails.get(s))
 				{
